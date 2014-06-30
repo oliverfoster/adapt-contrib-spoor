@@ -6,7 +6,8 @@ define(['coreJS/adapt'], function (Adapt) {
                 spoor: {
                     completion: this.serialiseSaveState('_isComplete'),
                     _isCourseComplete: Adapt.course.get('_isComplete') || false,
-                    _isAssessmentPassed: Adapt.course.get('_isAssessmentPassed') || false
+                    _isAssessmentPassed: Adapt.course.get('_isAssessmentPassed') || false,
+                    _isAssessmentAttemptComplete: Adapt.course.get('_isAssessmentAttemptComplete') || false
                 }
           };
         },
@@ -54,6 +55,7 @@ define(['coreJS/adapt'], function (Adapt) {
 
             Adapt.course.set('_isComplete', suspendData.spoor._isCourseComplete);
             Adapt.course.set('_isAssessmentPassed', suspendData.spoor._isAssessmentPassed);
+            Adapt.course.set('_isAssessmentAttemptComplete', suspendData.spoor._isAssessmentAttemptComplete);
 
             return suspendData;
         },

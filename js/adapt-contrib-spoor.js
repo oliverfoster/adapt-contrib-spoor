@@ -78,11 +78,13 @@ define(function(require) {
     },
 
     onBlockComplete: function(block) {
+      console.log("spoor:onBlockComplete " + block.get('_id'));
       this.set('lastCompletedBlock', block);
       this.persistSuspendData();
     },
 
     onCourseComplete: function() {
+      console.log("spoor:onCourseComplete");
       if(Adapt.course.get('_isComplete') === true) {
         this.set('_attempts', this.get('_attempts')+1);
       }
@@ -90,18 +92,21 @@ define(function(require) {
     },
 
     onAssessmentComplete: function(event) {
+      console.log("spoor:onAssessmentComplete");
       if(this.data._tracking._shouldSubmitScore) {
         scormWrapper.setScore(event.scoreAsPercent, 0, 100);
       }
       if (event.isPass) {
         Adapt.course.set('_isAssessmentPassed', event.isPass);
-        this.persistSuspendData();
+        //this.persistSuspendData();
       } else {
         var onAssessmentFailure = this.data._reporting._onAssessmentFailure;
         if (onAssessmentFailure !== "" && onAssessmentFailure !== "incomplete") {
           scormWrapper.setStatus(onAssessmentFailure);
         }
       }
+      // we want to know when as assessment attempt has been completed, regardless of result
+      this.persistSuspendData();
     },
 
     onQuestionComplete: function(questionView) {
@@ -139,11 +144,15 @@ define(function(require) {
     },
 		
     persistSuspendData: function(){
+      console.log("spoor:persistSuspendData");
       scormWrapper.setSuspendData(JSON.stringify(serialiser.serialise()));
 
 			//TODO should this really be here? It's nothing to do with setting the suspend_data and therefore breaks the 'does what it says on the tin' rule...
 			var courseCriteriaMet = this.data._tracking._requireCourseCompleted ? Adapt.course.get('_isComplete') : true;
       var assessmentCriteriaMet = this.data._tracking._requireAssessmentPassed ? Adapt.course.get('_isAssessmentPassed') : true;
+
+      console.log("courseCriteriaMet: " + courseCriteriaMet);
+      console.log("assessmentCriteriaMet: " + assessmentCriteriaMet);
 			
 			if(courseCriteriaMet && assessmentCriteriaMet) {
         scormWrapper.setStatus(this.data._reporting._onTrackingCriteriaMet);
