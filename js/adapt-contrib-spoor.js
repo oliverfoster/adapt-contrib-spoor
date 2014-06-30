@@ -78,13 +78,11 @@ define(function(require) {
     },
 
     onBlockComplete: function(block) {
-      console.log("spoor:onBlockComplete " + block.get('_id'));
       this.set('lastCompletedBlock', block);
       this.persistSuspendData();
     },
 
     onCourseComplete: function() {
-      console.log("spoor:onCourseComplete");
       if(Adapt.course.get('_isComplete') === true) {
         this.set('_attempts', this.get('_attempts')+1);
       }
@@ -92,7 +90,6 @@ define(function(require) {
     },
 
     onAssessmentComplete: function(event) {
-      console.log("spoor:onAssessmentComplete");
       if(this.data._tracking._shouldSubmitScore) {
         scormWrapper.setScore(event.scoreAsPercent, 0, 100);
       }
@@ -144,20 +141,17 @@ define(function(require) {
     },
 		
     persistSuspendData: function(){
-      console.log("spoor:persistSuspendData");
-      scormWrapper.setSuspendData(JSON.stringify(serialiser.serialise()));
+	    scormWrapper.setSuspendData(JSON.stringify(serialiser.serialise()));
 
-			//TODO should this really be here? It's nothing to do with setting the suspend_data and therefore breaks the 'does what it says on the tin' rule...
-			var courseCriteriaMet = this.data._tracking._requireCourseCompleted ? Adapt.course.get('_isComplete') : true;
-      var assessmentCriteriaMet = this.data._tracking._requireAssessmentPassed ? Adapt.course.get('_isAssessmentPassed') : true;
+		//TODO should this really be here? It's nothing to do with setting the suspend_data and therefore breaks the 'does what it says on the tin' rule...
+		var courseCriteriaMet = this.data._tracking._requireCourseCompleted ? Adapt.course.get('_isComplete') : true;
+      	var assessmentCriteriaMet = this.data._tracking._requireAssessmentPassed ? Adapt.course.get('_isAssessmentPassed') : true;
 
-      console.log("courseCriteriaMet: " + courseCriteriaMet);
-      console.log("assessmentCriteriaMet: " + assessmentCriteriaMet);
-			
-			if(courseCriteriaMet && assessmentCriteriaMet) {
-        scormWrapper.setStatus(this.data._reporting._onTrackingCriteriaMet);
-      }
-    }
+  
+		if(courseCriteriaMet && assessmentCriteriaMet) {
+	        scormWrapper.setStatus(this.data._reporting._onTrackingCriteriaMet);
+	      }
+	    }
     
   });
   Adapt.on('app:dataReady', function() {
