@@ -59,6 +59,7 @@ define(function(require) {
       Adapt.on('assessment:complete', this.onAssessmentComplete, this);
       Adapt.on('questionView:complete', this.onQuestionComplete, this);
       Adapt.on('questionView:reset', this.onQuestionReset, this);
+      Adapt.on('bookmarking:locationID', this.onSetLessonLocation, this);
     },
 
     loadSuspendData: function() {
@@ -114,6 +115,10 @@ define(function(require) {
       if(this.get('_sessionID') !== questionView.model.get('_sessionID')) {
           questionView.model.set('_isEnabledOnRevisit', true);
       }
+    },
+
+    onSetLessonLocation: function(id) {
+      scormWrapper.setLessonLocation(id);
     },
 		
     persistSuspendData: function(){
