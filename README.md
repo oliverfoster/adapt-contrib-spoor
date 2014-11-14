@@ -57,6 +57,20 @@ On the premise that 1 hex byte is 4 binary bits or 0-15 as a decimal. i.e. 0-f =
 The suspend data is saved to the LMS as a hex encoded string of binary switches, whereby a non-question-type component, or an incomplete question-type component occupies 1 byte(1 hex character) "0000" and a complete questiontype component will store a minimum of 3 bytes (3 hex characters) "1000|0000|0000".  
 A component is always represented by "0000" if it is incomplete, i.e. no score or user selections will be saved.  
   
+When a components' _selectionData and score are available for reinstanciation the follow occurs:  
+```
+    item.set('_attemptsLeft', 0);
+    item.set('_buttonState', "submit");
+    item.set("_score", score);
+    if (score < 1) {
+        item.set("_isCorrect", false);
+    } else {
+        item.set("_isCorrect", true);
+    }
+    item.set("_selectionData", selectionData);
+    item.set("_isSubmitted", true);
+```  
+  
 The bits of each entry are representative of the following:  
   
 bit 0: 1 bit : _isComplete : 0/1  
@@ -82,5 +96,17 @@ Opporunities for alterations:
   
 1. To allow cookies to be used to store user completion+selection+score outside of an lms environment for end users - obvious limitation are that a single client must be used to maintain progression.  
 2. To further compress the suspend data using a base 32 (0-9-a-w) encoding rather than base 16 (hex,0-9-a-f).  
+  
+  
+Public interfaces:
+
+```
+window.hex2bin("f") == "1111"  
+window.bin2hex("1111") == "f"  
+  
+parseInt("hexstring", 16) //to convert hex to numbers  
+(number).toString(16) to //convert numbers to hex  
+```
+Also coming is a public interfaces to marshall item selections like the slider 0-x values so that the number is stored as a binary digit in _selectionData rather than binary switches as with mcq item selection.  
 
 
