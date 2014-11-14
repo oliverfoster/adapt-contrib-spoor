@@ -35,11 +35,8 @@ window.hex2bin = hex2bin;
 window.bin2hex = bin2hex;
 
 var userSelections;
-var userSelectionsBinRep;
 var trackingIdSiblings;
 var errored = false;
-var questionTypeComponents;
-var presentationTypeComponents;
 
     return {
 
