@@ -55,6 +55,8 @@ Working specification:
 On the premise that 1 hex byte is 4 binary bits or 0-15 as a decimal. i.e. 0-f = 0000-1111 = 0-15   
   
 The suspend data is saved to the LMS as a hex encoded string of binary switches, whereby a non-question-type component, or an incomplete question-type component occupies 1 byte(1 hex character) "0000" and a complete questiontype component will store a minimum of 3 bytes (3 hex characters) "1000|0000|0000".  
+A component is always represented by "0000" if it is incomplete, i.e. no score or user selections will be saved.  
+  
 The bits of each entry are representative of the following:  
   
 bit 0: 1 bit : _isComplete : 0/1  
@@ -66,4 +68,4 @@ Example:
   
 1010|1111|1111|1110|0110  
   
-This describes a question-type component which is completed, has a score of 255, has between 7 and 8 items where the first three are selected, the next two are unselected, the following two are selected and the last may or maynot exist but is unselected.  
+This describes a question-type component which is completed, has a score of 2.55, has between 7 and 8 items where the first three are selected, the next two are unselected, the following two are selected and the last may or maynot exist but is unselected.  
