@@ -31,31 +31,6 @@ function hex2bin(str) {
     return output;
 }
 
-function encode(str) {
-    console.log(str);
-    var l = str.length;
-    var output = l.toString(16) + ":" + bin2hex(str);
-    console.log("");
-    console.log( l + " binary characters compressed to " + output.length + " characters")
-    console.log(output);
-    console.log("");
-    return output;
-}
-
-function decode(str) {
-    var l = parseInt(str.substr(0,str.indexOf(":")), 16);
-    var str = str.substr(str.indexOf(":")+1);
-    var output = hex2bin(str);
-    if (output.length > l) output = output.substr(0,l);
-    else if (output.length < l) {
-        for (var i = 0; i < l - output.length; i++) {
-            output = output + "0";
-        }
-    }
-    console.log(output);
-}
-
-
 window.hex2bin = hex2bin;
 window.bin2hex = bin2hex;
 
