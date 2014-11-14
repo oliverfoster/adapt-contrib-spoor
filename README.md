@@ -48,4 +48,22 @@ Component _score variable:
   
 This can be the stantard question component score. It is saved to the LMS as a value from 0-255 whereby a component score of 1 is saved to the LMS as a value of 100, a score of .2 is saved as a value of 20 and 2.55 is saved as a value of 255.  
   
-When using this extended storage mechanism it is imporatant to keep block tracking id's consistent and component placement inside blocks consistant and b-01[tracking id: 1] { c-01, c-02 } would be saved as tracking id, index 1 and index 2. Question component items must remain in their initial JSON order to preserve the relationship between user selection and storage, but their content can be change and items can be appended or removed from the end of the list. i.e. [item1(selected), item2, item3, item4(selected)] would be saved to the LMS as [true,false,false,true].  
+When using this extended storage mechanism it is imporatant to keep block tracking id's consistent and component placement inside blocks consistant, such that b-01[tracking id: 1]{ c-01, c-02 } would be saved as tracking-id[index1,index2]. Question component items must remain in their initial JSON order to preserve the relationship between user selection and storage. Question component item contents can be changed and items can be appended only or removed only from the end of the list without adverse effect to the course i.e. [item1(selected), item2, item3, item4(selected)] would be saved to the LMS as [true,false,false,true].  
+  
+Working specification:  
+  
+On the premise that 1 hex byte is 4 binary bits or 0-15 as a decimal. i.e. 0-f = 0000-1111 = 0-15   
+  
+The suspend data is saved to the LMS as a hex encoded string of binary switches, whereby a non-question-type component, or an incomplete question-type component occupies 1 byte(1 hex character) "0000" and a complete questiontype component will store a minimum of 3 bytes (3 hex characters) "1000|0000|0000".  
+The bits of each entry are representative of the following:  
+  
+bit 0: 1 bit : _isComplete : 0/1  
+bit 1-3: 3 bits : the number of blocks required to store _selectionData array (where 1 block is half a byte "0000") : 100 = 1 block, 010 = 2 blocks, 111 = 7 blocks (giving 4*7=28 selections)  
+bit 4-11: 8 bits : _score : to store the component's Math.round(score*100)  
+bit 12+: 4 bit blocks : _selectionData : representing the _selectionData array "1001" for four items where the first and last are selected  
+  
+Example:  
+  
+1010|1111|1111|1110|0110  
+  
+This describes a question-type component which is completed, has a score of 255, has between 7 and 8 items where the first three are selected, the next two are unselected, the following two are selected and the last may or maynot exist but is unselected.  
