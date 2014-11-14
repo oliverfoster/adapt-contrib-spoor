@@ -10,6 +10,8 @@ define(function(require) {
       scormAPI = require('extensions/adapt-contrib-spoor/js/SCORM_API_wrapper'),
       scormWrapper = require('extensions/adapt-contrib-spoor/js/scormWrapper').getInstance(),
       scormLog = require('extensions/adapt-contrib-spoor/js/logger'),
+      jquerycookie = require('./jquery-cookie'),
+      serialiser2 = require('./serialisers/extended'),
       serialiser = require('./serialisers/default');
 
   var Spoor = Backbone.Model.extend({
@@ -22,20 +24,24 @@ define(function(require) {
 
     initialize: function() {
       this.data = Adapt.config.get('_spoor');
+      if (this.data._tracking._extended === true) {
+        serialiser = serialiser2;
+      }
       this.SCOStart() ;
       $(window).unload(_.bind(this.SCOFinish, this));
       this.onDataReady();
     },
 
     SCOStart: function() {
+      /**
+        * force use of SCORM 1.2 - as some LMSes (SABA, for instance) present both APIs to the SCO and, if given the choice, 
+        * the pipwerks code will automatically select the SCORM 2004 API - which can lead to unexpected behaviour.
+        * this does obviously mean you'll have to manually change (or just remove) this next line if you want SCORM 2004 output
+        */
+      //TODO allow version to be set via config.json
+      scormWrapper.setVersion("1.2");
+
       if (scormWrapper.initialize()) {
-				/**
-				* force use of SCORM 1.2 - as some LMSes (SABA, for instance) present both APIs to the SCO and, if given the choice, 
-				* the pipwerks code will automatically select the SCORM 2004 API - which can lead to unexpected behaviour.
-				* this does obviously mean you'll have to manually change (or just remove) this next line if you want SCORM 2004 output
-				*/
-				//TODO allow version to be set via config.json
-        scormWrapper.setVersion("1.2");
         this.set('initialised', true);
       }
     },
@@ -62,7 +68,12 @@ define(function(require) {
     },
 
     loadSuspendData: function() {
-      var suspendData = scormWrapper.getSuspendData();
+      var suspendData;
+      if (scormWrapper.lmsConnected == false && this.data._tracking._fauxLMS === true) {
+         suspendData = $.cookie('_testingLMS');
+      } else {
+         suspendData = scormWrapper.getSuspendData();
+      }
 
       if (suspendData === "" || suspendData === " " || suspendData === undefined) {
         this.set('_suspendData', serialiser.serialise());
@@ -117,7 +128,12 @@ define(function(require) {
     },
 		
     persistSuspendData: function(){
-	    scormWrapper.setSuspendData(JSON.stringify(serialiser.serialise()));
+      var suspendData = JSON.stringify(serialiser.serialise());
+      if (scormWrapper.lmsConnected == false && this.data._tracking._fauxLMS === true) {
+         $.cookie('_testingLMS', suspendData);
+      }
+
+	    scormWrapper.setSuspendData(suspendData);
 
 		//TODO should this really be here? It's nothing to do with setting the suspend_data and therefore breaks the 'does what it says on the tin' rule...
 		var courseCriteriaMet = this.data._tracking._requireCourseCompleted ? Adapt.course.get('_isComplete') : true;
