@@ -69,3 +69,18 @@ Example:
 1010|1111|1111|1110|0110  
   
 This describes a question-type component which is completed, has a score of 2.55, has between 7 and 8 items where the first three are selected, the next two are unselected, the following two are selected and the last may or maynot exist but is unselected.  
+  
+```
+_extended: true,
+_fauxLMS: true
+```
+
+This will currently save the suspend data intended for the LMS to a browser local cookie and reinstanciate the data from the cookie on page reload. It is intended for testing purposes only, so that LMS functionality can be tested outside of an LMS. To clear the cookie is to delete the user selections, scores and block completion.  
+The created cookie currently has a 7 day expiry and a "/" path, which may interfere with other websites. This needs to be resolved.  
+
+Opporunities for alterations:  
+  
+1. To allow cookies to be used to store user completion+selection+score outside of an lms environment for end users - obvious limitation are that a single client must be used to maintain progression.  
+2. To further compress the suspend data using a base 32 (0-9-a-w) encoding rather than base 16 (hex,0-9-a-f).  
+
+
