@@ -1,6 +1,7 @@
 // to be added to course/config.json
 {
     "_spoor": {
+		"_isEnabled": true,
         "_tracking": {
             "_requireCourseCompleted": true,
             "_requireAssessmentPassed": false,
@@ -9,7 +10,7 @@
         "_reporting": {
             "_comment": "Your options here are 'completed', 'passed', 'failed', and 'incomplete'",
             "_onTrackingCriteriaMet": "completed",
-            "_onQuizFailure": "incomplete"
+			"_onAssessmentFailure": "incomplete"
         }
     }
 }
