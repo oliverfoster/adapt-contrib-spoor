@@ -1,5 +1,18 @@
+function createResetButton() {
+	$('body').append($('<style id="spoor-clear-button">.spoor-clear-button { position:fixed; right:0px; bottom:0px; } </style>'));
+	var $button = $('<button class="spoor-clear-button">Reset</button>');
+	$('body').append($button);
+	$button.on("click", function() {
+		API.LMSClear();
+		alert("Status Reset");
+		window.location.reload();
+	});
+}
+
+
 var API = {
 	LMSInitialize: function() {
+		createResetButton();
 		console.log("LMSInitialize");
 		if (!API.LMSFetch()) {
 			this.data["cmi.core.lesson_status"] = "not attempted";
