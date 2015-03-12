@@ -5,8 +5,7 @@
             "_requireCourseCompleted": true,
             "_requireAssessmentPassed": false,
             "_shouldSubmitScore": false,
-            "_extended": true,
-            "_fauxLMS": false
+            "_extended": true
         },
         "_reporting": {
             "_comment": "Your options here are 'completed', 'passed', 'failed', and 'incomplete'",
