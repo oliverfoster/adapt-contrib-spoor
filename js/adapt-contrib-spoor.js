@@ -6,11 +6,12 @@
 define(function(require) {
 
 	var Adapt = require('coreJS/adapt'),
-			_ = require('underscore'),
-			scormAPI = require('extensions/adapt-contrib-spoor/js/SCORM_API_wrapper'),
-			scormWrapper = require('extensions/adapt-contrib-spoor/js/scormWrapper').getInstance(),
-			scormLog = require('extensions/adapt-contrib-spoor/js/logger'),
-			serialiser = require('./serialisers/default');
+		_ = require('underscore'),
+		scormAPI = require('extensions/adapt-contrib-spoor/js/SCORM_API_wrapper'),
+		scormWrapper = require('extensions/adapt-contrib-spoor/js/scormWrapper').getInstance(),
+		scormLog = require('extensions/adapt-contrib-spoor/js/logger'),
+		serialiser2 = require('./serialisers/extended'),
+		serialiser = require('./serialisers/default');
 
 	var Spoor = Backbone.Model.extend({
 
@@ -22,7 +23,9 @@ define(function(require) {
 
 		initialize: function() {
 			this.data = Adapt.config.get('_spoor');
-			if (!this.data || this.data._isEnabled === false) return;
+			if (this.data._tracking._extended === true) {
+				serialiser = serialiser2;
+			}
 			this.SCOStart() ;
 			$(window).unload(_.bind(this.SCOFinish, this));
 			this.onDataReady();
@@ -34,6 +37,7 @@ define(function(require) {
 				* the pipwerks code will automatically select the SCORM 2004 API - which can lead to unexpected behaviour.
 				* this does obviously mean you'll have to manually change (or just remove) this next line if you want SCORM 2004 output
 				*/
+
 			//TODO allow version to be set via config.json
 			scormWrapper.setVersion("1.2");
 
@@ -93,7 +97,7 @@ define(function(require) {
 
 		onAssessmentComplete: function(event) {
 			Adapt.course.set('_isAssessmentPassed', event.isPass)
-			
+
 			this.persistSuspendData();
 
 			if(this.data._tracking._shouldSubmitScore) {
@@ -119,7 +123,7 @@ define(function(require) {
 				questionView.model.set('_isEnabledOnRevisit', true);
 			}
 		},
-		
+
 		persistSuspendData: function() {
 			scormWrapper.setSuspendData(JSON.stringify(serialiser.serialise()));
 		},
@@ -132,8 +136,9 @@ define(function(require) {
 				scormWrapper.setStatus(this.data._reporting._onTrackingCriteriaMet);
 			}
 		}
-		
+
 	});
+
 	Adapt.on('app:dataReady', function() {
 		new Spoor();
 	});

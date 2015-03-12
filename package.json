@@ -1,6 +1,6 @@
 {
   "name": "adapt-contrib-spoor",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A basic scorm tracking plugin for Adapt",
   "main": "",
   "scripts": {
