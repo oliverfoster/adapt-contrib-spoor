@@ -130,29 +130,28 @@ When a component's ```_selectionData``` and ```score``` are available for reinst
 The bits of each entry are representative of the following:
   
 bit 0: 1 bit : _isComplete : 0/1
-bit 1-3: 3 bits : the number of blocks required to store ```_selectionData``` array (where 1 block is half a byte "0000") : 100 = 1 block, 010 = 2 blocks, 111 = 7 blocks (giving 4*7=28 selections)
+
+bit 1-3: 3 bits : the number of blocks required to store ```_selectionData``` array (where 1 block is half a byte "0000") : 100 = 1 block, 010 = 2 blocks, 111 = 7 blocks (giving ```4*7=28``` selections)
+
 bit 4-11: 8 bits : ```_score``` : to store the component's ```Math.round(score*100)```
+
 bit 12+: 4 bit blocks : ```_selectionData``` : representing the ```_selectionData``` array "1001" for four items where the first and last are selected
   
 Example:
-  
-```1010|1111|1111|1110|0110```
-  
+1010|1111|1111|1110|0110
+
 This describes a question-type component which is completed, has a score of 2.55, has between 7 and 8 items - where the first three are selected, the next two are unselected, the following two are selected and the last may or may not exist but is unselected.
-   
 
 ####Opportunities for alterations
-  
 1. To allow cookies to be used to store user completion+selection+score outside of an LMS environment for end users - obvious limitations are that a single client must be used to maintain progression.
 2. To further compress the suspend data using a base 32 (0-9-a-w) encoding rather than base 16 (hex,0-9-a-f).
-  
-  
+ 
 ####Public interfaces
 
 ```
 window.hex2bin("f") == "1111"
 window.bin2hex("1111") == "f"
-  
+
 parseInt("hexstring", 16) //to convert hex to numbers
 (number).toString(16) to //convert numbers to hex
 ```
