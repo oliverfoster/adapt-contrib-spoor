@@ -23,12 +23,17 @@ define(function(require) {
 
 		initialize: function() {
 			this.data = Adapt.config.get('_spoor');
+
 			if (!this.data || this.data._isEnabled === false) return;
+			
 			if (this.data._tracking._extended === true) {
 				serialiser = serialiser2;
 			}
+			
 			this.SCOStart() ;
+			
 			$(window).unload(_.bind(this.SCOFinish, this));
+			
 			this.onDataReady();
 		},
 
@@ -130,12 +135,17 @@ define(function(require) {
 		},
 
 		checkTrackingCriteriaMet: function() {
-			var courseCriteriaMet = this.data._tracking._requireCourseCompleted ? Adapt.course.get('_isComplete') : true;
-			var assessmentCriteriaMet = this.data._tracking._requireAssessmentPassed ? Adapt.course.get('_isAssessmentPassed') : true;
+			var criteriaMet = false;
 
-			if(courseCriteriaMet && assessmentCriteriaMet) {
-				scormWrapper.setStatus(this.data._reporting._onTrackingCriteriaMet);
+			if (this.data._tracking._requireCourseCompleted && this.data._tracking._requireAssessmentPassed) { // user must complete all blocks AND pass the assessment
+				criteriaMet = (Adapt.course.get('_isComplete') && Adapt.course.get('_isAssessmentPassed'));
+			} else if (this.data._tracking._requireCourseCompleted) { //user only needs to complete all blocks
+				criteriaMet = Adapt.course.get('_isComplete');
+			} else if (this.data._tracking._requireAssessmentPassed) { // user only needs to pass the assessment
+				criteriaMet = Adapt.course.get('_isAssessmentPassed');
 			}
+
+			if (criteriaMet) scormWrapper.setStatus(this.data._reporting._onTrackingCriteriaMet);
 		}
 
 	});
