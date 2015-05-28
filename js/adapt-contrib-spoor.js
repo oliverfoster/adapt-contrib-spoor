@@ -111,12 +111,9 @@ define(function(require) {
 			}
 			if (event.isPass) {
 				_.defer(_.bind(this.checkTrackingCriteriaMet, this));
-			} else {
-				var onAssessmentFailure = this.data._reporting._onAssessmentFailure;
-				if (onAssessmentFailure !== "") {
-					this.persistSuspendData();
-					scormWrapper.setStatus(onAssessmentFailure);
-				}
+			} else if (this.data._tracking._requireAssessmentPassed) {
+				this.persistSuspendData();
+				scormWrapper.setStatus(this.data._reporting._onAssessmentFailure);
 			}
 		},
 
