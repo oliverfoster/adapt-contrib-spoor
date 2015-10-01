@@ -18,6 +18,10 @@ You will need to add the data that is in [example.json](example.json) to your co
 
 Additionally, you must update your course to include tracking IDs in blocks.json - this should be done by running
 ```
+$ rub --trackinginsert
+```
+or
+```
 $ grunt tracking-insert
 ```
 or
